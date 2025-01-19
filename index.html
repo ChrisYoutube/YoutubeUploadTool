@@ -1,75 +1,74 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Persönliches YouTube-Upload-Tool</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1em;
-        }
-        section {
-            padding: 20px;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        p {
-            font-size: 1.1em;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1em;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-        a {
-            color: #00bcd4;
-            text-decoration: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Video Upload Tool</title>
+  <!-- Link zu Google OAuth-2.0 Styles -->
+  <link rel="stylesheet" href="https://apis.google.com/css/api.css">
 </head>
 <body>
+  <h1>YouTube Video Upload Tool</h1>
 
-<header>
-    <h1>Persönliches YouTube-Upload-Tool</h1>
-</header>
+  <p>Willkommen beim YouTube Video Upload Tool. Diese Anwendung verwendet die YouTube Data API v3, um Videos auf meinen persönlichen YouTube-Kanal hochzuladen.</p>
+  
+  <p><strong>Wichtiger Hinweis:</strong> Dieses Tool ist nur für den privaten Gebrauch bestimmt und wird ausschließlich von mir verwendet.</p>
 
-<section>
-    <h2>Über dieses Projekt</h2>
-    <p>Dieses Tool wurde entwickelt, um Videos mithilfe der YouTube Data API auf einen YouTube-Kanal hochzuladen. 
-       Es ist für den privaten Gebrauch gedacht und aufgrund der spezifischen Konfiguration kaum für unabhängige Dritte nutzbar.</p>
+  <h2>OAuth-Authentifizierung</h2>
+  <p>Um das Tool zu verwenden, müssen Sie sich bei Google anmelden und den Zugriff auf Ihr YouTube-Konto autorisieren. Dies gewährleistet, dass nur Sie Zugriff auf Ihr Konto haben und dass keine Daten von anderen Nutzern verwendet werden.</p>
 
-    <h2>OAuth-Zustimmungsprozess</h2>
-    <p>Dieses Tool verwendet OAuth 2.0, um Zugriff auf Ihren YouTube-Kanal zu erhalten. Beim ersten Ausführen des Skripts werden Sie 
-       aufgefordert, den Zugriff auf Ihr Konto zu gewähren. Diese Anwendung fordert den Bereich <code>youtube.upload</code>, 
-       um Videos auf Ihrem YouTube-Kanal hochzuladen.</p>
-   
+  <!-- Google OAuth Login Button -->
+  <button id="login-button" onclick="handleAuthClick()">Mit Google anmelden</button>
 
-    <h2>Datenschutzerklärung</h2>
-    <p>Da dieses Tool nur privat genutzt wird, werden keine Daten von Dritten gesammelt oder gespeichert. Weitere Details 
-       finden Sie in unserer <a href="datenschutzerklaerung.html" target="_blank">Datenschutzerklärung</a></p>
+  <h3>Datenschutzerklärung</h3>
+  <p>Für detaillierte Informationen, wie wir Ihre Daten verwenden, lesen Sie bitte unsere <a href="datenschutzerklaerung.html">Datenschutzerklärung</a>.</p>
 
-    <h2>Hinweis zur Nutzung</h2>
-    <p>Dieses Tool wurde speziell für persönliche Zwecke erstellt und ist nicht für die allgemeine Nutzung vorgesehen. 
-       Aufgrund der individuellen Einstellungen und des lokalen Skripts ist eine unabhängige Nutzung durch Dritte nicht möglich.</p>
-</section>
+  <h3>Nutzungsbedingungen</h3>
+  <p>Dieses Tool darf nur für private Zwecke verwendet werden und ist nicht für die Nutzung durch andere Nutzer bestimmt.</p>
 
-<footer>
-    <p>&copy; 2025 Persönliches YouTube-Upload-Tool</p>
-</footer>
+  <!-- OAuth Client ID und Scopes -->
+  <script src="https://apis.google.com/js/platform.js"></script>
+  <script>
+    // OAuth 2.0 Client ID und Scopes
+    const CLIENT_ID = '565863424921-pqro15an8pcv2gtljooh2ipvdq9365sm.apps.googleusercontent.com';
+    const API_KEY = 'AIzaSyCEHKhQ8NAKl8JSHQrL3Uvtjw-9awmiSCU';
+    const SCOPES = 'https://www.googleapis.com/auth/youtube.upload';
+    const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'];
+
+    // OAuth Login-Handler
+    function handleAuthClick() {
+      gapi.auth2.getAuthInstance().signIn().then(function() {
+        console.log("Erfolgreich bei Google angemeldet");
+        // Weiterer Code, um das Tool zu verwenden
+        // (z.B. ein Video hochladen)
+      });
+    }
+
+    function initClient() {
+      gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        scope: SCOPES,
+        discoveryDocs: DISCOVERY_DOCS
+      }).then(function () {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    // OAuth 2.0 Client initialisieren
+    function updateSigninStatus(isSignedIn) {
+      if (isSignedIn) {
+        console.log("Nutzer ist angemeldet");
+        document.getElementById('login-button').style.display = 'none';
+      } else {
+        console.log("Nutzer ist nicht angemeldet");
+        document.getElementById('login-button').style.display = 'inline-block';
+      }
+    }
+
+    gapi.load('client:auth2', initClient);
+  </script>
 
 </body>
 </html>
